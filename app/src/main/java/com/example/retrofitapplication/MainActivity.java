@@ -15,6 +15,7 @@ import com.example.retrofitapplication.Api.RetrofitClient;
 import com.example.retrofitapplication.Model.GitResponse;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
         callGitApi("kotlin");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDate mydate = HelperDateUtility.getCurrentDate();
+            Log.d("DATE MODULE: ",mydate.toString());
+        }else {
+            Date mydate = HelperDateUtility.getCurrentDateLegacy();
             Log.d("DATE MODULE: ",mydate.toString());
         }
     }
