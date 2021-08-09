@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "RetrofitApplication"
 include ':app'
+include ':myModule'

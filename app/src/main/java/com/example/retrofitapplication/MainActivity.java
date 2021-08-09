@@ -5,12 +5,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.example.mymodule.HelperDateUtility;
 import com.example.retrofitapplication.Adapter.MyAdapter;
 import com.example.retrofitapplication.Api.MyApi;
 import com.example.retrofitapplication.Api.RetrofitClient;
 import com.example.retrofitapplication.Model.GitResponse;
+
+import java.time.LocalDate;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,7 +30,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView=findViewById(R.id.recycler_View);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         callGitApi("kotlin");
-
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDate mydate = HelperDateUtility.getCurrentDate();
+            Log.d("DATE MODULE: ",mydate.toString());
+        }
     }
 
     public void callGitApi(String name){
