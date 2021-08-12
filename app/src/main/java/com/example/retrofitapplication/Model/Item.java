@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Item {
 
+
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -229,9 +230,19 @@ public class Item {
     @SerializedName("score")
     @Expose
     private Double score;
+//
+    private boolean fav;
+
+    public boolean getFav() {
+        return fav;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
+    }
 
     public Integer getId() {
-        return id;
+        return id != null ? id : 0;
     }
 
     public void setId(Integer id) {
@@ -239,15 +250,16 @@ public class Item {
     }
 
     public String getNodeId() {
-        return nodeId;
+        return nodeId != null ? nodeId : "";
     }
 
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
     }
 
+    // expression ? first value : second value;
     public String getName() {
-        return name;
+        return name != null ? name : "";
     }
 
     public void setName(String name) {
@@ -351,7 +363,7 @@ public class Item {
     }
 
     public String getIssueEventsUrl() {
-        return issueEventsUrl;
+        return issueEventsUrl !=null ?issueEventsUrl : "";
     }
 
     public void setIssueEventsUrl(String issueEventsUrl) {
@@ -359,7 +371,7 @@ public class Item {
     }
 
     public String getEventsUrl() {
-        return eventsUrl;
+        return eventsUrl !=null ? eventsUrl : "";
     }
 
     public void setEventsUrl(String eventsUrl) {
@@ -367,7 +379,7 @@ public class Item {
     }
 
     public String getAssigneesUrl() {
-        return assigneesUrl;
+        return assigneesUrl !=null ? assigneesUrl : "";
     }
 
     public void setAssigneesUrl(String assigneesUrl) {
@@ -375,7 +387,7 @@ public class Item {
     }
 
     public String getBranchesUrl() {
-        return branchesUrl;
+        return branchesUrl !=null ? branchesUrl : "";
     }
 
     public void setBranchesUrl(String branchesUrl) {
@@ -383,7 +395,7 @@ public class Item {
     }
 
     public String getTagsUrl() {
-        return tagsUrl;
+        return tagsUrl !=null ? tagsUrl : "";
     }
 
     public void setTagsUrl(String tagsUrl) {
@@ -391,7 +403,7 @@ public class Item {
     }
 
     public String getBlobsUrl() {
-        return blobsUrl;
+        return blobsUrl !=null ? blobsUrl : "";
     }
 
     public void setBlobsUrl(String blobsUrl) {
@@ -399,7 +411,7 @@ public class Item {
     }
 
     public String getGitTagsUrl() {
-        return gitTagsUrl;
+        return gitTagsUrl !=null ? gitTagsUrl : "";
     }
 
     public void setGitTagsUrl(String gitTagsUrl) {
@@ -407,7 +419,7 @@ public class Item {
     }
 
     public String getGitRefsUrl() {
-        return gitRefsUrl;
+        return gitRefsUrl !=null ? gitRefsUrl : "";
     }
 
     public void setGitRefsUrl(String gitRefsUrl) {
@@ -415,7 +427,7 @@ public class Item {
     }
 
     public String getTreesUrl() {
-        return treesUrl;
+        return treesUrl !=null ? treesUrl : "";
     }
 
     public void setTreesUrl(String treesUrl) {
@@ -423,7 +435,7 @@ public class Item {
     }
 
     public String getStatusesUrl() {
-        return statusesUrl;
+        return statusesUrl !=null ? statusesUrl : "";
     }
 
     public void setStatusesUrl(String statusesUrl) {
@@ -431,7 +443,7 @@ public class Item {
     }
 
     public String getLanguagesUrl() {
-        return languagesUrl;
+        return languagesUrl !=null ? languagesUrl : "";
     }
 
     public void setLanguagesUrl(String languagesUrl) {
