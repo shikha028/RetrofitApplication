@@ -13,9 +13,6 @@
         android:theme="@style/Theme.RetrofitApplication"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".FavoriteActivity"
-            android:exported="true" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

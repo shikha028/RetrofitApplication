@@ -2,10 +2,14 @@ package com.example.retrofitapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,16 +22,18 @@ import com.example.retrofitapplication.Adapter.MyAdapter;
 import com.example.retrofitapplication.Api.MyApi;
 import com.example.retrofitapplication.Api.RetrofitClient;
 import com.example.retrofitapplication.Model.GitResponse;
+import com.example.retrofitapplication.Model.Item;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FragmentListener {
 
     RecyclerView recyclerView;
     MyAdapter myAdapter;
@@ -42,19 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
         cachedItemList = CachedItemList.getInstance();
 
-        recyclerView = findViewById(R.id.recycler_View);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //making an api call only after saving in db
+        if(!readPref()) {
+            callGitApi("kotlin");
+        }
 
-        favoritefloat = findViewById(R.id.float_favoriteBtn);
-        favoritefloat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, FavoriteActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        callGitApi("kotlin");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDate mydate = HelperDateUtility.getCurrentDate();
             Log.d("DATE MODULE: ", mydate.toString());
@@ -73,9 +71,10 @@ public class MainActivity extends AppCompatActivity {
                     GitResponse gitResponse = response.body();
 
                     cachedItemList.setMainList(gitResponse.getItems());
-
-                    myAdapter = new MyAdapter(cachedItemList.getMainList(), MainActivity.this);
-                    recyclerView.setAdapter(myAdapter);
+                    populateDBWithListFromAPI(gitResponse.getItems());
+                    savePref();
+                    /*myAdapter = new MyAdapter(cachedItemList.getMainList(), MainActivity.this);
+                    recyclerView.setAdapter(myAdapter);*/
                 } else {
                     Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                 }
@@ -86,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //loading the fragment after making api call in oncreate
+        useFragment(new RepoListFragment(MainActivity.this));
     }
 
     @Override
@@ -111,23 +117,68 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-   /* public void usingEditTextFilter(EditText editText){
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+    /* public void usingEditTextFilter(EditText editText){
+         editText.addTextChangedListener(new TextWatcher() {
+             @Override
+             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
+             }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                //myAdapter.getFilter().filter(charSequence);
-            }
+             @Override
+             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                 //myAdapter.getFilter().filter(charSequence);
+             }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.length()>=3)
-                    myAdapter.getFilter().filter(editable);
-            }
-        });
-    }*/
+             @Override
+             public void afterTextChanged(Editable editable) {
+                 if (editable.length()>=3)
+                     myAdapter.getFilter().filter(editable);
+             }
+         });
+     }*/
+    public void useFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.ll_repoListContainer, fragment);
+        fragmentTransaction.addToBackStack("Frag");
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onFragmentLoad() {
+        useFragment(new FavoriteFragment(MainActivity.this));
+    }
+
+    @Override
+    public void getAdapterFromFragment(RecyclerView.Adapter adapter) {
+        //adapter.notifyDataSetChanged();
+        myAdapter = (MyAdapter) adapter;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1)
+            getSupportFragmentManager().popBackStack();
+        else
+            finish();
+    }
+
+    public void populateDBWithListFromAPI(List<Item> myList) {
+        FavDataBase favDataBase = new FavDataBase(this);
+        for (int i = 0; i < myList.size(); i++) {
+            favDataBase.saveItem(myList.get(i));
+        }
+    }
+
+    private void savePref() {
+        SharedPreferences prefs = getSharedPreferences("app_pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("isApiCalled", true);
+        editor.commit();
+    }
+
+    private boolean readPref() {
+        SharedPreferences prefs = getSharedPreferences("app_pref", MODE_PRIVATE);
+        return prefs.getBoolean("isApiCalled", false);
+    }
 }
