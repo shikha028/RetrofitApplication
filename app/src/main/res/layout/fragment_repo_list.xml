@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    >
     <!--<EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
 -->
 
-   <!-- <androidx.recyclerview.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recycler_View"/>
@@ -25,14 +25,7 @@
         android:id="@+id/float_favoriteBtn"
         android:backgroundTint="@color/red"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"/>-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/ll_repoListContainer"
-        android:orientation="vertical"/>
-
+        android:layout_alignParentEnd="true"/>
 
 
 

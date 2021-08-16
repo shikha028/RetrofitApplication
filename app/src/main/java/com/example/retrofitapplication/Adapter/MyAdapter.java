@@ -1,9 +1,11 @@
 package com.example.retrofitapplication.Adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Filter;
@@ -11,10 +13,12 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.retrofitapplication.CachedItemList;
+import com.example.retrofitapplication.FavDataBase;
 import com.example.retrofitapplication.Model.Item;
 import com.example.retrofitapplication.R;
 import com.squareup.picasso.Picasso;
@@ -28,13 +32,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     Context context;
     List<Item> backup;
     CachedItemList cachedItemList;
+    FavDataBase favDataBase;
 
     public MyAdapter(List<Item> itemList, Context context) {
         this.itemList = itemList;
         this.context = context;
         backup = (itemList);
-        cachedItemList = CachedItemList.getInstance();
-        fav_List = new ArrayList<>();
+        //cachedItemList = CachedItemList.getInstance();
+        favDataBase = new FavDataBase(context);
+        //fav_List = new ArrayList<>();
     }
 
     @NonNull
@@ -55,19 +61,33 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         holder.fullname.setText(item.getFullName());
         holder.description.setText(item.getDescription());
         // holder.avatar.setImageURI(Uri.parse(item.getOwner().getAvatarUrl()));
-        Picasso.get().load(item.getOwner().getAvatarUrl()).into(holder.avatar);
+        if (item.getOwner().getAvatarUrl()!="")
+            Picasso.get().load(item.getOwner().getAvatarUrl()).placeholder(R.drawable.stars).into(holder.avatar);
 
-        holder.fav_radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.fav_radioButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                item.setFav(checked);
-                if (checked)
-                    addItem(item);
-                else
-                    removeItem(item);
+            public void onClick(View view) {
+                if (item.getFav() == 1) {
+                    item.setFav(0);
+                    //removeItem(item);
+                    favDataBase.updateItem(item);
+                    holder.fav_radioButton.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.star_border), null, null, null);
+                } else {
+                    item.setFav(1);
+                    //addItem(item);
+                    favDataBase.updateItem(item);
+                    holder.fav_radioButton.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.star_rate), null, null, null);
+                }
             }
         });
-        holder.fav_radioButton.setChecked(item.getFav());
+        //int resId = item.getFav() == 1 ? R.drawable.star_rate : R.drawable.star_border;
+       // holder.fav_radioButton.setCompoundDrawablesWithIntrinsicBounds(getDrawable(resId), null, null, null);
+    }
+
+    private Drawable getDrawable(@DrawableRes int resId) {
+        Drawable img = context.getResources().getDrawable(resId);
+        return img;
     }
 
     private void removeItem(Item item) {
@@ -129,7 +149,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
         public TextView name, fullname, description;
         public ImageView avatar;
-        public CheckBox fav_radioButton;
+        public Button fav_radioButton;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -137,7 +157,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
             fullname = itemView.findViewById(R.id.full_name);
             description = itemView.findViewById(R.id.description);
             avatar = itemView.findViewById(R.id.avatarImg);
-            fav_radioButton=itemView.findViewById(R.id.radio_favbtn);
+            fav_radioButton = itemView.findViewById(R.id.radio_favbtn);
         }
     }
 

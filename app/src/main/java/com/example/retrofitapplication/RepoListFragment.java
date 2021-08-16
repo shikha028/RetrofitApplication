@@ -1,7 +1,6 @@
 package com.example.retrofitapplication;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,28 +13,28 @@ import android.view.ViewGroup;
 
 import com.example.retrofitapplication.Adapter.MyAdapter;
 import com.example.retrofitapplication.Model.Item;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
-public class FavoriteFragment extends Fragment {
+public class RepoListFragment extends Fragment {
+
     RecyclerView recyclerView;
-    List<Item> itemList, fav_list;
+    List<Item> itemList;
     CachedItemList cachedItemList;
-    FavDataBase favDataBase;
-
     FragmentListener fragmentListener;
+    FloatingActionButton floatingActionButton;
 
+    FavDataBase favDataBase;
+    private MyAdapter myAdapter;
 
-    public FavoriteFragment(Context context) {
+    public RepoListFragment(Context context) {
         // Required empty public constructor
-        favDataBase = new FavDataBase(context);
         cachedItemList = CachedItemList.getInstance();
-        //  itemList = cachedItemList.getMainList();
-        //fav_list = cachedItemList.getFavList();
-        fav_list = favDataBase.getItemList(1);
+        favDataBase = new FavDataBase(context);
+        //itemList = cachedItemList.getMainList();
+        itemList = favDataBase.getItemList();
         fragmentListener = (FragmentListener) context;
         //fragmentListener = (FragmentListener) getContext();
     }
@@ -43,22 +42,36 @@ public class FavoriteFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_favorite, container, false);
-
-        recyclerView = view.findViewById(R.id.frag_recycler);
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            fav_list = itemList.stream().filter(e->e.getFav()==true).collect(Collectors.toList());
-        }*/
-        MyAdapter myAdapter = new MyAdapter(fav_list, getContext());
+        View view = inflater.inflate(R.layout.fragment_repo_list, container, false);
+        recyclerView = view.findViewById(R.id.recycler_View);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        myAdapter = new MyAdapter(itemList, getContext());
+        floatingActionButton = view.findViewById(R.id.float_favoriteBtn);
         recyclerView.setAdapter(myAdapter);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragmentListener.onFragmentLoad();
+            }
+        });
         fragmentListener.getAdapterFromFragment(myAdapter);
         return view;
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        itemList = favDataBase.getItemList();
+        myAdapter.notifyDataSetChanged();
     }
 }
