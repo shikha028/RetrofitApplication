@@ -145,6 +145,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         }
     };
 
+    public void updateList(List<Item> itemList){
+        this.itemList = itemList;
+        this.notifyDataSetChanged();
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView name, fullname, description;

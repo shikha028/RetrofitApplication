@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Item {
 
-
     @SerializedName("id")
     @Expose
     private Integer id;
