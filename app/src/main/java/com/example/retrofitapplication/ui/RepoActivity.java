@@ -32,7 +32,6 @@ public class RepoActivity extends AppCompatActivity implements Contract.BaseView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo);
 
-
         Contract.ApiModelInteractor apiModelInteractor = new ApiModelInteractorImpl();
         presenter = new PresenterImpl(this, apiModelInteractor);
         presenter.requestData();
