@@ -1,6 +1,7 @@
 package com.example.mymodule.MVPContract;
 
 public interface Contract {
+
     // View
     interface BaseView {
 
