@@ -46,3 +46,13 @@ jobs:
 
       - name: lint-command
         run: ./gradlew lintDebug
+
+  unit-test:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Run test
+        run: ./gradlew test
