@@ -62,13 +62,13 @@ jobs:
 
   instrumentation-test:
     needs: [unit-test]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
 
       - name: Run espresso test
-        uses: reactivecircus/android-emulator-runner@v3
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           script: ./gradlew connectedCheck
