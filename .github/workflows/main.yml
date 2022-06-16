@@ -67,6 +67,9 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v3
 
+      - name: change wrapper permissions
+        run: chmod +x ./gradlew
+
       - name: Run espresso test
         uses: reactivecircus/android-emulator-runner@v2
         with:
