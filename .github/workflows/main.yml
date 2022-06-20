@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew lintDebug
 
   unit-test:
-    needs: [lint]
+    #needs: [lint]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -74,4 +74,4 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew connectedCheck
+          script: ./gradlew connectedCheck --warning-mode=all
