@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew lintDebug
 
   unit-test:
-    #needs: [lint]
+    needs: [lint]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -61,7 +61,7 @@ jobs:
         run: ./gradlew test
 
   instrumentation-test:
-    #needs: [unit-test]
+    needs: [unit-test]
     runs-on: macos-latest
     steps:
       - name: Checkout the code
@@ -70,7 +70,7 @@ jobs:
       - name: change wrapper permissions
         run: chmod +x ./gradlew
 
-      - name: set the JDK 1.8
+      - name: set the JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -83,6 +83,7 @@ jobs:
           script: ./gradlew connectedCheck --warning-mode=all
 
   build-debug-apk:
+    needs: [instrumentation-test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -104,4 +105,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: retrofit-debug.apk
-          path: app/build/output/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
